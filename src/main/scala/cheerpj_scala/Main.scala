@@ -47,7 +47,15 @@ object Main {
 
   def runMain(scalaFile: String, outputDir: String, classpath: Array[String]): String = try {
     new File(outputDir).mkdirs()
-    val (success, consoleOut) = scalac(scalaFile, "-d", outputDir, "-classpath", classpath.mkString(":"))
+    val (success, consoleOut) = scalac(
+      scalaFile,
+      "-d",
+      outputDir,
+      "-classpath",
+      classpath.mkString(":"),
+      "-Xplugin:/app/cheerpj-scala/dist/wartremover_2.12.jar",
+      "-P:wartremover:traverser:org.wartremover.warts.Unsafe"
+    )
     if (!success) {
       consoleOut
     } else {

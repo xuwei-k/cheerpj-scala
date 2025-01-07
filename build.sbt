@@ -38,6 +38,7 @@ lazy val cheerpjScala = project
       "-deprecation",
     ),
     libraryDependencies ++= Seq(
+      "org.wartremover" %% "wartremover" % "2.2.0",
       "org.scala-sbt" %% "io" % "1.10.4" % Test,
       "io.circe" %% "circe-parser" % "0.14.10",
       "io.circe" %% "circe-generic" % "0.14.10",
