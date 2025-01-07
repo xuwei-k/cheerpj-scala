@@ -3,7 +3,7 @@ lazy val cheerpjScala = project
   .settings(
     scalaVersion := {
       // latest scala version does not work with CheerpJ
-      "2.12.3" // scala-steward:off
+      "2.10.7" // scala-steward:off
     },
     name := "cheerpj_scala",
     TaskKey[Unit]("dist") := {
@@ -38,11 +38,6 @@ lazy val cheerpjScala = project
       "-deprecation",
     ),
     libraryDependencies ++= Seq(
-      "org.scala-sbt" %% "io" % "1.10.4" % Test,
-      "io.circe" %% "circe-parser" % "0.14.10",
-      "io.circe" %% "circe-generic" % "0.14.10",
-      "org.typelevel" %% "cats-free" % "2.12.0",
-      "org.scalatest" %% "scalatest-freespec" % "3.2.19" % Test,
       "org.scala-lang" % "scala-compiler" % scalaVersion.value,
     ),
     Test / fork := true

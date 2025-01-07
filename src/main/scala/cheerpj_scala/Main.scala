@@ -35,7 +35,10 @@ object Main {
       .find(
         new File(dirName).toPath,
         20,
-        (f, x) => x.isRegularFile && f.toFile.getName.endsWith(classSuffix)
+        new java.util.function.BiPredicate[java.nio.file.Path, java.nio.file.attribute.BasicFileAttributes] {
+          override def test(f: java.nio.file.Path, x: java.nio.file.attribute.BasicFileAttributes) =
+            x.isRegularFile && f.toFile.getName.endsWith(classSuffix)
+        }
       )
       .collect(Collectors.toList())
       .asScala
@@ -116,10 +119,15 @@ object Main {
   }
 
   def scalac(args: String*): (Boolean, String) = {
-    time("compile") {
-      withConsole(
+    val (_, s) = time("compile") {
+      withConsole {
         scala.tools.nsc.Main.process(args.toArray)
-      )
+      }
+    }
+    if (s.isEmpty) {
+      (true, "")
+    } else {
+      (false, s)
     }
   }
 
