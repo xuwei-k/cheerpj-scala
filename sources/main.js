@@ -9,6 +9,7 @@ import {
 } from "https://unpkg.com/htm@3.1.1/preact/standalone.module.js";
 
 import { jarNames } from "./dist/jar_files.js";
+import { Scalafmt } from "./dist/main.js";
 
 const getFromStorageOr = (key, defaultValue, fun) => {
   const saved = localStorage.getItem(key);
@@ -57,6 +58,12 @@ const App = () => {
     }
     return () => {};
   }, [input]);
+
+  async function formatInput() {
+    const code = Scalafmt.format(input);
+    setInput(code);
+    cm.current.setValue(code);
+  }
 
   async function compileAndRun() {
     running.current = true;
@@ -132,6 +139,11 @@ const App = () => {
           onclick=${() => compileAndRun()}
         >
           run
+        </button>
+      </div>
+      <div class="col">
+        <button class="btn btn-primary" onclick=${() => formatInput()}>
+          format input scala code
         </button>
       </div>
     </div>
