@@ -1,0 +1,19 @@
+{
+  "name": "cheerpj-scala",
+  "version": "1.0.0",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xuwei-k/cheerpj-scala.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xuwei-k/cheerpj-scala/issues"
+  },
+  "homepage": "https://github.com/xuwei-k/cheerpj-scala#readme",
+  "devDependencies": {
+    "prettier": "^3.4.1"
+  }
+}
