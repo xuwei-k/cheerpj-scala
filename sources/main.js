@@ -37,6 +37,7 @@ object Main {
 const initialFileName = getFromStorageOr("file_name", "Main");
 
 const App = () => {
+  const [autoRun, setAutoRun] = useState(true);
   const [fileName, setFileName] = useState(initialFileName);
   const [output, setOutput] = useState("");
   const [input, setInput] = useState(initialInput);
@@ -57,6 +58,33 @@ const App = () => {
     return () => {};
   }, [input]);
 
+  async function compileAndRun() {
+    running.current = true;
+
+    try {
+      const encoder = new TextEncoder();
+      const baseDir = (Math.random() + 1).toString(36).substring(2);
+      const scalaFile = `/str/${baseDir}/${fileName}.scala`;
+      cheerpOSAddStringFile(scalaFile, encoder.encode(input));
+      const main = mainRef.current;
+      const classOutput = `/files/${baseDir}/`;
+      const classpath = jarNames.map((x) => "/app/cheerpj-scala/dist/" + x);
+      const result = await main.runMain(scalaFile, classOutput, classpath);
+      setOutput(result);
+
+      [
+        ["input", input],
+        ["file_name", fileName],
+      ].forEach(([key, val]) => {
+        if (val.toString().length <= 1024 * 8) {
+          localStorage.setItem(key, val);
+        }
+      });
+    } finally {
+      running.current = false;
+    }
+  }
+
   useEffect(() => {
     (async () => {
       if (mainRef.current === null) {
@@ -69,36 +97,14 @@ const App = () => {
       }
       if (running.current === true) {
         console.log("skip");
-      } else {
-        running.current = true;
-        try {
-          const encoder = new TextEncoder();
-          const baseDir = (Math.random() + 1).toString(36).substring(2);
-          const scalaFile = `/str/${baseDir}/${fileName}.scala`;
-          cheerpOSAddStringFile(scalaFile, encoder.encode(input));
-          const main = mainRef.current;
-          const classOutput = `/files/${baseDir}/`;
-          const classpath = jarNames.map((x) => "/app/cheerpj-scala/dist/" + x);
-          const result = await main.runMain(scalaFile, classOutput, classpath);
-          setOutput(result);
-
-          [
-            ["input", input],
-            ["file_name", fileName],
-          ].forEach(([key, val]) => {
-            if (val.toString().length <= 1024 * 8) {
-              localStorage.setItem(key, val);
-            }
-          });
-        } finally {
-          running.current = false;
-        }
+      } else if (autoRun) {
+        await compileAndRun();
       }
     })();
   }, [input, fileName]);
 
   return html`<div class="row">
-      <div>
+      <div class="col-3">
         <label for="file_name">file name: </label>
         <input
           maxlength="128"
@@ -106,6 +112,27 @@ const App = () => {
           value=${fileName}
           oninput=${(x) => setFileName(x.target.value)}
         /><span>.scala</span>
+      </div>
+      <div class="col-1">
+        <div>
+          <input
+            type="checkbox"
+            name="auto_run"
+            id="auto_run"
+            checked=${autoRun}
+            onChange=${(e) => setAutoRun(e.target.checked)}
+          />
+          <label for="auto_run">auto run</label>
+        </div>
+      </div>
+      <div class="col-1">
+        <button
+          class="btn btn-primary"
+          id="run"
+          onclick=${() => compileAndRun()}
+        >
+          run
+        </button>
       </div>
     </div>
     <div class="row" style="height: 800px;">
