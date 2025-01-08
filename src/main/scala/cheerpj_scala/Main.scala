@@ -85,7 +85,7 @@ object Main {
         val clazz = loader.loadClass(className)
         clazz.getMethods.flatMap(m => getMainMethod(m, clazz)).map(clazz -> _)
       }.sortBy(x => (x._2, x._1.getName)).headOption
-      classAndMain.fold("") { case (clazz, mainMethodInfo) =>
+      classAndMain.fold("not found main method") { case (clazz, mainMethodInfo) =>
         val mainMethod = {
           if (mainMethodInfo.hasArgs) {
             clazz.getMethod("main", classOf[Array[String]])
