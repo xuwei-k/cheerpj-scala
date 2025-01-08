@@ -18,16 +18,43 @@ object Main {
 
   private def classSuffix = ".class"
 
-  private def isMain(method: Method): Boolean = {
-    (
-      "main" == method.getName
-    ) && Modifier.isStatic(
-      method.getModifiers
-    ) && (
-      method.getReturnType == java.lang.Void.TYPE
-    ) && (
-      method.getParameters.map(_.getType).toList == List(classOf[Array[String]])
-    )
+  /**
+   * [[https://openjdk.org/jeps/445]]
+   */
+  private def getMainMethod(method: Method, clazz: Class[_]): Option[MainMethod] = {
+    if (
+      (
+        "main" == method.getName
+      ) && (
+        method.getReturnType == java.lang.Void.TYPE
+      )
+    ) {
+      val hasArgs = method.getParameters.map(_.getType).toList == List(classOf[Array[String]])
+      val emptyArg = method.getParameterCount == 0
+      if (Modifier.isStatic(method.getModifiers)) {
+        (hasArgs, emptyArg) match {
+          case (true, _) =>
+            Some(MainMethod(isStatic = true, hasArgs = true))
+          case (_, true) =>
+            Some(MainMethod(isStatic = true, hasArgs = false))
+          case _ =>
+            None
+        }
+      } else if (clazz.getConstructors.exists(_.getParameterCount == 0)) {
+        (hasArgs, emptyArg) match {
+          case (true, _) =>
+            Some(MainMethod(isStatic = false, hasArgs = true))
+          case (_, true) =>
+            Some(MainMethod(isStatic = false, hasArgs = false))
+          case _ =>
+            None
+        }
+      } else {
+        None
+      }
+    } else {
+      None
+    }
   }
 
   private def findClasses(dirName: String): List[String] = {
@@ -54,18 +81,35 @@ object Main {
       val classNames = findClasses(outputDir)
       val url = new File(outputDir).toURI.toURL
       val loader = new URLClassLoader(Array[URL](url))
-      val hasMain = classNames.filter { className =>
-        loader.loadClass(className).getMethods.exists(isMain)
-      }.sorted.headOption
-      hasMain.fold("") { className =>
+      val classAndMain = classNames.flatMap { className =>
         val clazz = loader.loadClass(className)
-        val mainMethod = clazz.getMethod("main", classOf[Array[String]])
+        clazz.getMethods.flatMap(m => getMainMethod(m, clazz)).map(clazz -> _)
+      }.sortBy(x => (x._2, x._1.getName)).headOption
+      classAndMain.fold("") { case (clazz, mainMethodInfo) =>
+        val mainMethod = {
+          if (mainMethodInfo.hasArgs) {
+            clazz.getMethod("main", classOf[Array[String]])
+          } else {
+            clazz.getMethod("main")
+          }
+        }
         mainMethod.setAccessible(true)
         val args = Array.empty[String]
         time("run") {
-          withConsole(
-            mainMethod.invoke(null, args)
-          )._2
+          withConsole {
+            val instance: Any = {
+              if (mainMethodInfo.isStatic) {
+                null
+              } else {
+                clazz.getConstructor().newInstance()
+              }
+            }
+            if (mainMethodInfo.hasArgs) {
+              mainMethod.invoke(instance, args)
+            } else {
+              mainMethod.invoke(instance)
+            }
+          }._2
         }
       }
     }
@@ -74,7 +118,7 @@ object Main {
       stacktraceString(e)
   }
 
-  private def withConsole[A](f: => A): (A, String) = {
+  def withConsole[A](f: => A): (A, String) = {
     val out = new ByteArrayOutputStream
     val s = new PrintStream(out)
     val result = Console.withErr(s) {
