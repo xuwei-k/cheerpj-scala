@@ -92,11 +92,40 @@ const App = () => {
     }
   }
 
+  async function Java_java_lang_invoke_MethodHandleNatives_setCallSiteTargetNormal(
+    lib,
+    self,
+    p1,
+    p2,
+  ) {
+    console.log(
+      `Java_java_lang_invoke_MethodHandleNatives_setCallSiteTargetNormal`,
+    );
+  }
+  /*
+  async function Java_scala_reflect_internal_util_StatisticsStatics_areSomeHotStatsEnabled(lib, self) {
+    console.log(
+      `Java_scala_reflect_internal_util_StatisticsStatics_areSomeHotStatsEnabled`,
+    );
+    return false;
+  }
+  async function Java_scala_reflect_internal_util_StatisticsStatics_areSomeColdStatsEnabled(lib, self) {
+    console.log(
+      `Java_scala_reflect_internal_util_StatisticsStatics_areSomeColdStatsEnabled`,
+    );
+    return false;
+  }
+  */
+
   useEffect(() => {
     (async () => {
       if (mainRef.current === null) {
         setOutput("loading ...");
-        await cheerpjInit();
+        await cheerpjInit({
+          natives: {
+            Java_java_lang_invoke_MethodHandleNatives_setCallSiteTargetNormal,
+          },
+        });
         const lib = await cheerpjRunLibrary(
           jarNames.map((x) => "/app/cheerpj-scala/dist/" + x).join(":"),
         );

@@ -3,7 +3,7 @@ lazy val cheerpjScala = project
   .settings(
     scalaVersion := {
       // latest scala version does not work with CheerpJ
-      "2.12.3" // scala-steward:off
+      "2.12.5" // scala-steward:off
     },
     name := "cheerpj_scala",
     TaskKey[Unit]("dist") := {
@@ -27,7 +27,13 @@ lazy val cheerpjScala = project
         }
       }
       jarFiles.foreach { jar =>
-        IO.copyFile(jar, dir / jarName(jar))
+        if (jar.getName.contains("scala-reflect")) {
+          withModifyReflectJar(jar, (Compile / packageBin).value) { f =>
+            IO.copyFile(f, dir / jarName(jar))
+          }
+        } else {
+          IO.copyFile(jar, dir / jarName(jar))
+        }
       }
       IO.write(
         dir / "jar_files.js",
@@ -48,6 +54,19 @@ lazy val cheerpjScala = project
     Test / fork := true
   )
   .aggregate(testServer, scalafmt)
+
+def withModifyReflectJar[A](jar: File, add: File)(action: File => A): Unit = {
+  IO.withTemporaryDirectory { dir =>
+    val files = IO.unzip(jar, dir, name => !name.contains("StatisticsStatics"))
+    IO.unzip(add, dir)
+    // println(files.size)
+    val out = dir / "out.jar"
+    // files.toList.take(20).foreach(f => println(IO.relativize(dir, f).get))
+    IO.zip(files.map(f => (f, IO.relativize(dir, f).get)), out, None)
+    // action(out)
+    action(jar)
+  }
+}
 
 lazy val testServer = project
   .in(file("test-server"))
