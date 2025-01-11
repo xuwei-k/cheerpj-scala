@@ -39,6 +39,7 @@ lazy val cheerpjScala = project
     ),
     libraryDependencies ++= Seq(
       "org.scala-sbt" %% "io" % "1.10.4" % Test,
+      "org.clojure" % "clojure" % "1.12.0",
       "io.circe" %% "circe-parser" % "0.14.10",
       "io.circe" %% "circe-generic" % "0.14.10",
       "org.typelevel" %% "cats-free" % "2.12.0",

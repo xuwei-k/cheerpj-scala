@@ -26,14 +26,7 @@ const getFromStorageOr = (key, defaultValue, fun) => {
 
 const initialInput = getFromStorageOr(
   "input",
-  `package example
-
-object Main {
-  def main(args: Array[String]): Unit = {
-    println("hello")
-  }
-}
-`,
+  `(prn "hello")`
 );
 const initialFileName = getFromStorageOr("file_name", "Main");
 

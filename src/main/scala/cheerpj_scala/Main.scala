@@ -57,6 +57,36 @@ object Main {
     }
   }
 
+  def withTempDir[A](f: File => A): A = {
+    val dir = java.nio.file.Files.createTempDirectory("tmp").toFile
+    try {
+      f(dir)
+    } finally {
+      dir.delete()
+    }
+  }
+
+  def runClojure(src: String): Unit = try {
+    withTempDir { srcDir =>
+      withTempDir { outputDir =>
+        try {
+          val compilePath = clojure.lang.RT.`var`("clojure.core", "*compile-path*")
+          val newMap = clojure.lang.RT.map(compilePath, outputDir.getAbsolutePath())
+          clojure.lang.Var.pushThreadBindings(newMap)
+          val f = new File(srcDir, "main.clj")
+          java.nio.file.Files.write(f.toPath, src.getBytes("UTF-8"))
+          clojure.lang.Compiler.compile(new java.io.FileReader(f.getAbsolutePath()), f.getName(), f.getName())
+        } finally {
+          clojure.lang.Var.popThreadBindings()
+        }
+      }
+    }
+  } catch {
+    case e =>
+      e.printStackTrace()
+      stacktraceString(e)
+  }
+
   private def findClasses(dirName: String): List[String] = {
     Files
       .find(
@@ -72,7 +102,13 @@ object Main {
       .toList
   }
 
-  def runMain(scalaFile: String, outputDir: String, classpath: Array[String]): String = try {
+  def runMain(scalaFile: String, outputDir: String, classpath: Array[String]): String = {
+    withConsole {
+      runClojure(new String(java.nio.file.Files.readAllBytes(new File(scalaFile).toPath), "UTF-8"))
+    }._2
+  }
+
+  def runMain2(scalaFile: String, outputDir: String, classpath: Array[String]): String = try {
     new File(outputDir).mkdirs()
     val (success, consoleOut) = scalac(scalaFile, "-d", outputDir, "-classpath", classpath.mkString(":"))
     if (!success) {
