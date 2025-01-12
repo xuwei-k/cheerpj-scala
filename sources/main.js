@@ -42,6 +42,7 @@ const App = () => {
   const [fileName, setFileName] = useState(initialFileName);
   const [output, setOutput] = useState("");
   const [input, setInput] = useState(initialInput);
+  const [info, setInfo] = useState("");
   const mainRef = useRef(null);
   const running = useRef(false);
   const cm = useRef(null);
@@ -92,11 +93,15 @@ const App = () => {
     }
   }
 
+  async function Java_hoge_Hoge_info(lib, self, value) {
+    setInfo(value);
+  }
+
   useEffect(() => {
     (async () => {
       if (mainRef.current === null) {
         setOutput("loading ...");
-        await cheerpjInit();
+        await cheerpjInit({ natives: { Java_hoge_Hoge_info } });
         const lib = await cheerpjRunLibrary(
           jarNames.map((x) => "/app/cheerpj-scala/dist/" + x).join(":"),
         );
@@ -141,10 +146,13 @@ const App = () => {
           run
         </button>
       </div>
-      <div class="col">
+      <div class="col-2">
         <button class="btn btn-primary" onclick=${() => formatInput()}>
           format input scala code
         </button>
+      </div>
+      <div class="col-3">
+        <pre id="info" style="height: 100px; background-color:rgb(66, 66, 66);">${info}</pre>
       </div>
     </div>
     <div class="row" style="height: 800px;">

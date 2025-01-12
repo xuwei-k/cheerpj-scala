@@ -72,6 +72,8 @@ object Main {
       .toList
   }
 
+  def info(value: String): Unit = (new hoge.Hoge).info(value)
+
   def runMain(scalaFile: String, outputDir: String, classpath: Array[String]): String = try {
     new File(outputDir).mkdirs()
     val (success, consoleOut) = scalac(scalaFile, "-d", outputDir, "-classpath", classpath.mkString(":"))
@@ -155,7 +157,7 @@ object Main {
   private def time[A](label: String)(f: => A): A = {
     val start = System.currentTimeMillis()
     val res = f
-    print(s"${label} = ${System.currentTimeMillis() - start}")
+    info(s"${label} = ${System.currentTimeMillis() - start} ms")
     res
   }
 
