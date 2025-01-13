@@ -11,8 +11,10 @@ import {
 import { jarNames } from "./dist/jar_files.js";
 import { Scalafmt } from "./dist/main.js";
 
+const keyPrefix = "cheerpj_scala_";
+
 const getFromStorageOr = (key, defaultValue, fun) => {
-  const saved = localStorage.getItem(key);
+  const saved = localStorage.getItem(keyPrefix + key);
   if (saved === null) {
     return defaultValue;
   } else {
@@ -84,7 +86,7 @@ const App = () => {
         ["file_name", fileName],
       ].forEach(([key, val]) => {
         if (val.toString().length <= 1024 * 8) {
-          localStorage.setItem(key, val);
+          localStorage.setItem(keyPrefix + key, val);
         }
       });
     } finally {
