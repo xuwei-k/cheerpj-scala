@@ -26,6 +26,10 @@ lazy val cheerpjScala = project
           x.getName.replace('%', '-')
         }
       }
+      val duplicate = jarFiles.groupBy(jarName).collect { case (k, v) if v.size > 1 => v }.toList
+      if (duplicate.nonEmpty) {
+        sys.error(s"duplicate name!? ${duplicate}")
+      }
       jarFiles.foreach { jar =>
         IO.copyFile(jar, dir / jarName(jar))
       }
