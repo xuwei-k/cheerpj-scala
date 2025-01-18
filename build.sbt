@@ -60,8 +60,8 @@ lazy val testServer = project
     libraryDependencies ++= Seq(
       "org.scala-sbt" %% "io" % "1.10.4",
       "org.slf4j" % "slf4j-simple" % "2.0.16",
-      "ws.unfiltered" %% "unfiltered-filter" % "0.10.4", // scala-steward:off
-      "ws.unfiltered" %% "unfiltered-jetty" % "0.10.4", // scala-steward:off
+      "ws.unfiltered" %% "unfiltered-filter" % "0.10.5", // scala-steward:off
+      "ws.unfiltered" %% "unfiltered-jetty" % "0.10.5", // scala-steward:off
     )
   )
 
