@@ -45,7 +45,7 @@ lazy val cheerpjScala = project
       "org.scala-sbt" %% "io" % "1.10.4" % Test,
       "io.circe" %% "circe-parser" % "0.14.10",
       "io.circe" %% "circe-generic" % "0.14.10",
-      "org.typelevel" %% "cats-free" % "2.12.0",
+      "org.typelevel" %% "cats-free" % "2.13.0",
       "org.scalatest" %% "scalatest-freespec" % "3.2.19" % Test,
       "org.scala-lang" % "scala-compiler" % scalaVersion.value,
     ),
