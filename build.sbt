@@ -42,7 +42,7 @@ lazy val cheerpjScala = project
       "-deprecation",
     ),
     libraryDependencies ++= Seq(
-      "org.scala-sbt" %% "io" % "1.10.4" % Test,
+      "org.scala-sbt" %% "io" % "1.10.5" % Test,
       "io.circe" %% "circe-parser" % "0.14.12",
       "io.circe" %% "circe-generic" % "0.14.12",
       "org.typelevel" %% "cats-free" % "2.13.0",
@@ -58,7 +58,7 @@ lazy val testServer = project
   .settings(
     scalaVersion := "2.13.16",
     libraryDependencies ++= Seq(
-      "org.scala-sbt" %% "io" % "1.10.4",
+      "org.scala-sbt" %% "io" % "1.10.5",
       "org.slf4j" % "slf4j-simple" % "2.0.17",
       "ws.unfiltered" %% "unfiltered-filter" % "0.10.5", // scala-steward:off
       "ws.unfiltered" %% "unfiltered-jetty" % "0.10.5", // scala-steward:off
