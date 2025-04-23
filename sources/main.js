@@ -72,11 +72,10 @@ const App = () => {
 
     try {
       const encoder = new TextEncoder();
-      const baseDir = (Math.random() + 1).toString(36).substring(2);
-      const scalaFile = `/str/${baseDir}/${fileName}.scala`;
+      const scalaFile = `/str/${fileName}.scala`;
       cheerpOSAddStringFile(scalaFile, encoder.encode(input));
       const main = mainRef.current;
-      const classOutput = `/files/${baseDir}/`;
+      const classOutput = `/files/`;
       const classpath = jarNames.map((x) => "/app/cheerpj-scala/dist/" + x);
       const result = await main.runMain(scalaFile, classOutput, classpath);
       setOutput(result);
