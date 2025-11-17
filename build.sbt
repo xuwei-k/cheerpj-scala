@@ -56,7 +56,7 @@ lazy val cheerpjScala = project
 lazy val testServer = project
   .in(file("test-server"))
   .settings(
-    scalaVersion := "2.13.17",
+    scalaVersion := "2.13.18",
     libraryDependencies ++= Seq(
       "org.scala-sbt" %% "io" % "1.10.5",
       "org.slf4j" % "slf4j-simple" % "2.0.17",
@@ -69,7 +69,7 @@ lazy val scalafmt = project
   .in(file("scalafmt"))
   .enablePlugins(ScalaJSPlugin)
   .settings(
-    scalaVersion := "2.13.17",
+    scalaVersion := "2.13.18",
     scalaJSLinkerConfig ~= {
       _.withESFeatures(_.withESVersion(org.scalajs.linker.interface.ESVersion.ES2018))
     },
