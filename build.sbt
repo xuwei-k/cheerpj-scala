@@ -43,7 +43,7 @@ lazy val cheerpjScala = project
     ),
     evictionErrorLevel := Level.Warn,
     libraryDependencies ++= Seq(
-      "org.scala-sbt" %% "io" % "1.10.5" % Test,
+      "org.scala-sbt" %% "io" % "1.12.0" % Test,
       "io.circe" %% "circe-parser" % "0.14.15",
       "io.circe" %% "circe-generic" % "0.14.15",
       "org.typelevel" %% "cats-free" % "2.13.0",
@@ -59,7 +59,7 @@ lazy val testServer = project
   .settings(
     scalaVersion := "2.13.18",
     libraryDependencies ++= Seq(
-      "org.scala-sbt" %% "io" % "1.10.5",
+      "org.scala-sbt" %% "io" % "1.12.0",
       "org.slf4j" % "slf4j-simple" % "2.0.17",
       "ws.unfiltered" %% "unfiltered-filter" % "0.10.5", // scala-steward:off
       "ws.unfiltered" %% "unfiltered-jetty" % "0.10.5", // scala-steward:off
