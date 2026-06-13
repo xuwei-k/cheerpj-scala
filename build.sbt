@@ -78,6 +78,6 @@ lazy val scalafmt = project
     fork / run := true,
     run / fork := true,
     libraryDependencies ++= Seq(
-      ("com.github.xuwei-k" %%% "scalafmt-core" % "3.10.7-fork-1").withSources(),
+      ("com.github.xuwei-k" %%% "scalafmt-core" % "3.11.1-fork-1").withSources(),
     )
   )
