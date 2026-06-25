@@ -1,6 +1,6 @@
 package cheerpj_scala
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.io.PrintStream
