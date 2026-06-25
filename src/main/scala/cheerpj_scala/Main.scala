@@ -21,7 +21,7 @@ object Main {
   /**
    * [[https://openjdk.org/jeps/445]]
    */
-  private def getMainMethod(method: Method, clazz: Class[_]): Option[MainMethod] = {
+  private def getMainMethod(method: Method, clazz: Class[?]): Option[MainMethod] = {
     if (
       (
         "main" == method.getName
