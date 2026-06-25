@@ -6,7 +6,7 @@ lazy val cheerpjScala = project
       "2.13.18" // scala-steward:off
     },
     name := "cheerpj_scala",
-    TaskKey[Unit]("dist") := {
+    TaskKey[Unit]("dist") := Def.uncached {
       val dir = file("sources") / "dist"
       IO.delete(dir)
       val Seq(m) = (scalafmt / Compile / fullLinkJS).value.data.publicModules.toSeq
@@ -18,7 +18,11 @@ lazy val cheerpjScala = project
 
       val exclude: Set[String] = Set(
       )
-      val jarFiles = (Compile / fullClasspathAsJars).value.map(_.data).filterNot(f => exclude(f.getName))
+      val jarFiles = (Compile / fullClasspathAsJars).value
+        .map(_.data)
+        .map(fileConverter.value.toPath)
+        .map(_.toFile)
+        .filterNot(f => exclude(f.getName))
       def jarName(x: File): String = {
         if (x.getName.contains('-')) {
           x.getName.split('-').dropRight(1).mkString("", "-", ".jar")
@@ -50,6 +54,7 @@ lazy val cheerpjScala = project
       "org.scalatest" %% "scalatest-freespec" % "3.2.20" % Test,
       "org.scala-lang" % "scala-compiler" % scalaVersion.value,
     ),
+    Test / classLoaderLayeringStrategy := ClassLoaderLayeringStrategy.Raw,
     Test / fork := true
   )
   .aggregate(testServer, scalafmt)
@@ -75,9 +80,8 @@ lazy val scalafmt = project
       _.withESFeatures(_.withESVersion(org.scalajs.linker.interface.ESVersion.ES2018))
     },
     scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.ESModule) },
-    fork / run := true,
     run / fork := true,
     libraryDependencies ++= Seq(
-      ("com.github.xuwei-k" %%% "scalafmt-core" % "3.11.1-fork-1").withSources(),
+      ("com.github.xuwei-k" %% "scalafmt-core" % "3.11.1-fork-1").withSources(),
     )
   )

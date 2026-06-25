@@ -20,10 +20,11 @@ jobs:
        git diff --exit-code
     - uses: actions/setup-java@v5
       with:
-        java-version: 8
+        java-version: 17
         distribution: temurin
     - uses: sbt/setup-sbt@v1
     - run: sbt -v
+           --server
            scalafmtSbtCheck
            scalafmtCheckAll
            test
