@@ -3,7 +3,7 @@ lazy val cheerpjScala = project
   .settings(
     scalaVersion := {
       // latest scala version does not work with CheerpJ
-      "2.12.3" // scala-steward:off
+      "2.13.18" // scala-steward:off
     },
     name := "cheerpj_scala",
     TaskKey[Unit]("dist") := {
