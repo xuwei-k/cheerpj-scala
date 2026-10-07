@@ -48,8 +48,8 @@ lazy val cheerpjScala = project
     evictionErrorLevel := Level.Warn,
     libraryDependencies ++= Seq(
       "org.scala-sbt" %% "io" % "1.13.5" % Test,
-      "io.circe" %% "circe-parser" % "0.14.16",
-      "io.circe" %% "circe-generic" % "0.14.16",
+      "io.circe" %% "circe-parser" % "0.14.17",
+      "io.circe" %% "circe-generic" % "0.14.17",
       "org.typelevel" %% "cats-free" % "2.13.0",
       "org.scalatest" %% "scalatest-freespec" % "3.2.20" % Test,
       "org.scala-lang" % "scala-compiler" % scalaVersion.value,
